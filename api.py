@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 import pickle
 from pydantic import BaseModel
+import json
 # import uvicorn
-from os import getenv
+# from os import getenv
 # Load the model
 # with open('app/diabetes_model.sav', 'rb') as file:
 #     diabetes_model = pickle.load(file)
@@ -24,14 +25,36 @@ class InputData(BaseModel):
 
 # Define the route to handle POST requests
 @app.post("/predict/")
-async def predict_diabetes(data: InputData):
-    # Convert input data to a list and reshape it
-    input_data = [list(data.model_dump().values())]
+async def predict_diabetes(input_parameters: InputData):
+    # # Convert input data to a list and reshape it
+    # input_data = [list(data.model_dump().values())]
+    # print("working")
+    # # Make prediction
+    # prediction = diabetes_model.predict(input_data)[0]
     
-    # Make prediction
-    prediction = diabetes_model.predict(input_data)[0]
+    # return {"prediction": prediction}
+    input_data = input_parameters.json()
+    input_dictionary = json.loads(input_data)
     
-    return {"prediction": "hello"}
+    preg = input_dictionary['Pregnancies']
+    glu = input_dictionary['Glucose']
+    bp = input_dictionary['BloodPressure']
+    skin = input_dictionary['SkinThickness']
+    insulin = input_dictionary['Insulin']
+    bmi = input_dictionary['BMI']
+    dpf = input_dictionary['DiabetesPedigreeFunction']
+    age = input_dictionary['Age']
+
+
+    input_list = [preg, glu, bp, skin, insulin, bmi, dpf, age]
+    
+    prediction = diabetes_model.predict([input_list])
+    
+    if prediction[0] == 0:
+        return 'The person is not Diabetic'
+    
+    else:
+        return 'The person is Diabetic'
 
 
 
