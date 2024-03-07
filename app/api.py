@@ -27,6 +27,6 @@ async def predict_diabetes(data: InputData):
     input_data = [list(data.model_dump().values())]
     
     # Make prediction
-    prediction = diabetes_model.predict(input_data)[0]
+    # prediction = diabetes_model.predict(input_data)[0]
     
-    return {"prediction": prediction}
+    return {"prediction": "hello"}
