@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 import pickle
 from pydantic import BaseModel
-
+import uvivorn
+from os import getenv
 # Load the model
 # with open('app/diabetes_model.sav', 'rb') as file:
 #     diabetes_model = pickle.load(file)
@@ -31,3 +32,9 @@ async def predict_diabetes(data: InputData):
     prediction = diabetes_model.predict(input_data)[0]
     
     return {"prediction": "hello"}
+
+
+
+if __name__ == "__main__":
+    port = int(getenv("PORT",8000))
+    uvicorn.run("app.api:app",host="0.0.0.0",port=port,reload=True)
