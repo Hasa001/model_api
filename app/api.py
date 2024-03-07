@@ -39,7 +39,7 @@ async def hello():
 @app.post('/diabetes_prediction')
 async def diabetes_pred(input_parameters : model_input):
     
-    input_data = input_parameters.json()
+    input_data = input_parameters.model_dump_json()
     input_dictionary = json.loads(input_data)
     
     preg = input_dictionary['Pregnancies']
