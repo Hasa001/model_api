@@ -37,7 +37,7 @@ async def hello():
     return {"helllo":"success hshsh"}
 
 @app.post('/diabetes_prediction')
-def diabetes_pred(input_parameters : model_input):
+async def diabetes_pred(input_parameters : model_input):
     
     input_data = input_parameters.json()
     input_dictionary = json.loads(input_data)
