@@ -7,7 +7,7 @@ from os import getenv
 # with open('app/diabetes_model.sav', 'rb') as file:
 #     diabetes_model = pickle.load(file)
 
-diabetes_model = pickle.load(open('app/diabetes_model.sav','rb'))
+diabetes_model = pickle.load(open('diabetes_model.sav','rb'))
 # Define the FastAPI app
 app = FastAPI()
 
