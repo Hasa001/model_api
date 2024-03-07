@@ -1,65 +1,32 @@
 from fastapi import FastAPI
-# from fastapi.middleware.cors import CORSMiddleware
+import pickle
 from pydantic import BaseModel
-import pickle5 as pickle
-import json
 
-
-app = FastAPI()
+# Load the model
 with open('diabetes_model.sav', 'rb') as file:
     diabetes_model = pickle.load(file)
-# origins = ["*"]
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+# Define the FastAPI app
+app = FastAPI()
 
-class model_input(BaseModel):
+# Define a Pydantic model to represent the input data
+class InputData(BaseModel):
+    pregnancies: int
+    glucose: int
+    blood_pressure: int
+    skin_thickness: int
+    insulin: int
+    bmi: float
+    diabetes_pedigree: float
+    age: int
+
+# Define the route to handle POST requests
+@app.post("/predict/")
+async def predict_diabetes(data: InputData):
+    # Convert input data to a list and reshape it
+    input_data = [list(data.model_dump().values())]
     
-    Pregnancies : int
-    Glucose : int
-    BloodPressure : int
-    SkinThickness : int
-    Insulin : int
-    BMI : float
-    DiabetesPedigreeFunction :  float
-    Age : int
+    # Make prediction
+    prediction = diabetes_model.predict(input_data)[0]
     
-
-# loading the saved model
-# diabetes_model = pickle.load(open('/diabetes_model.sav','rb'))
-
-@app.get("/",tags=["Root"])
-async def hello():
-    return {"helllo":"success hshsh"}
-
-@app.post('/diabetes_prediction')
-async def diabetes_pred(input_parameters : model_input):
-    
-    input_data = input_parameters.model_dump_json()
-    input_dictionary = json.loads(input_data)
-    
-    preg = input_dictionary['Pregnancies']
-    glu = input_dictionary['Glucose']
-    bp = input_dictionary['BloodPressure']
-    skin = input_dictionary['SkinThickness']
-    insulin = input_dictionary['Insulin']
-    bmi = input_dictionary['BMI']
-    dpf = input_dictionary['DiabetesPedigreeFunction']
-    age = input_dictionary['Age']
-
-
-    input_list = [preg, glu, bp, skin, insulin, bmi, dpf, age]
-    
-    prediction = diabetes_model.predict([input_list])
-    
-    if prediction[0] == 0:
-        return {'The person is not Diabetic'}
-    
-    else:
-        return {'The person is Diabetic'}
-
+    return {"prediction": prediction}
