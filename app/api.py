@@ -3,9 +3,10 @@ import pickle
 from pydantic import BaseModel
 
 # Load the model
-# with open('diabetes_model.sav', 'rb') as file:
+# with open('app/diabetes_model.sav', 'rb') as file:
 #     diabetes_model = pickle.load(file)
 
+diabetes_model = pickle.load(open('app/diabetes_model.sav','rb'))
 # Define the FastAPI app
 app = FastAPI()
 
@@ -27,6 +28,6 @@ async def predict_diabetes(data: InputData):
     input_data = [list(data.model_dump().values())]
     
     # Make prediction
-    # prediction = diabetes_model.predict(input_data)[0]
+    prediction = diabetes_model.predict(input_data)[0]
     
     return {"prediction": "hello"}
