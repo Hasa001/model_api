@@ -3,8 +3,8 @@ import pickle
 from pydantic import BaseModel
 
 # Load the model
-with open('diabetes_model.sav', 'rb') as file:
-    diabetes_model = pickle.load(file)
+# with open('diabetes_model.sav', 'rb') as file:
+#     diabetes_model = pickle.load(file)
 
 # Define the FastAPI app
 app = FastAPI()
