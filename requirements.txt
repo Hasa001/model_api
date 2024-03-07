@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-pickle5
 pydantic
-# scikit-learn
-# numpy
+scikit-learn
+numpy
