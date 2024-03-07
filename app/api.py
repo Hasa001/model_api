@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 # from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import pickle
+import pickle5 as pickle
 import json
 
 
 app = FastAPI()
-
+with open('diabetes_model.sav', 'rb') as file:
+    diabetes_model = pickle.load(file)
 # origins = ["*"]
 
 # app.add_middleware(
@@ -30,7 +31,7 @@ class model_input(BaseModel):
     
 
 # loading the saved model
-diabetes_model = pickle.load(open('/diabetes_model.sav','rb'))
+# diabetes_model = pickle.load(open('/diabetes_model.sav','rb'))
 
 @app.get("/",tags=["Root"])
 async def hello():
