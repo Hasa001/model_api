@@ -30,7 +30,7 @@ class model_input(BaseModel):
     
 
 # loading the saved model
-diabetes_model = pickle.load(open('diabetes_model.sav','rb'))
+diabetes_model = pickle.load(open('diabetes_model_1.sav','rb'))
 
 
 @app.post('/diabetes_prediction')
