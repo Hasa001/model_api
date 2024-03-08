@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
-import json
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+
 
 
 app = FastAPI()
@@ -28,13 +30,15 @@ class model_input(BaseModel):
     DiabetesPedigreeFunction :  float
     Age : int
     
-
+# scaler = StandardScaler()
 # loading the saved model
-diabetes_model = pickle.load(open('diabetes_model_1.sav','rb'))
+diabetes_model = pickle.load(open('Diabetes_Model.sav','rb'))
+
+scaler = pickle.load(open('scaler.sav', 'rb'))
 
 
 @app.post('/diabetes_prediction')
-def diabetes_pred(input_parameters : model_input):
+async def diabetes_pred(input_parameters : model_input):
     
     preg = input_parameters.Pregnancies
     glu = input_parameters.Glucose
@@ -46,12 +50,13 @@ def diabetes_pred(input_parameters : model_input):
     age = input_parameters.Age
 
 
-    input_list = [preg, glu, bp, skin, insulin, bmi, dpf, age]
-    
-    prediction = diabetes_model.predict([input_list])[0] 
+    input_array = np.array([[glu, bp, skin, insulin, bmi, dpf, age]])
+    input_scaled = scaler.transform(input_array)
+    print(input_scaled)
+    prediction = diabetes_model.predict(input_scaled)[0] 
     print(prediction)
     if prediction == 1:
-        return {'The person is Diabetic':prediction}
+        return {'The person is Diabetic'}
     
     else:
-        return {'The person is not Diabetic':prediction}
+        return {'The person is not Diabetic'}
