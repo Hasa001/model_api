@@ -19,9 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class model_input(BaseModel):
+class diabetes_model_input(BaseModel):
     
-    Pregnancies : int
     Glucose : int
     BloodPressure : int
     SkinThickness : int
@@ -29,18 +28,33 @@ class model_input(BaseModel):
     BMI : float
     DiabetesPedigreeFunction :  float
     Age : int
-    
-# scaler = StandardScaler()
+
+class heart_model_input(BaseModel):
+
+    age	: int
+    sex	: int
+    cp	: float
+    trestbps	: float
+    chol	: float
+    fbs	: float
+    restecg	: float
+    thalach	: float
+    exang	: float
+    oldpeak	: float
+    slope	: float
+    ca	: float
+    thal: float
+
 # loading the saved model
 diabetes_model = pickle.load(open('Diabetes_Model.sav','rb'))
+heart_health_model = pickle.load(open('Heart_Disease_Model.sav','rb'))
 
 scaler = pickle.load(open('scaler.sav', 'rb'))
-
+scaler2= pickle.load(open('scaler2.sav','rb'))
 
 @app.post('/diabetes_prediction')
-async def diabetes_pred(input_parameters : model_input):
+async def diabetes_pred(input_parameters : diabetes_model_input):
     
-    preg = input_parameters.Pregnancies
     glu = input_parameters.Glucose
     bp = input_parameters.BloodPressure
     skin = input_parameters.SkinThickness
@@ -52,11 +66,35 @@ async def diabetes_pred(input_parameters : model_input):
 
     input_array = np.array([[glu, bp, skin, insulin, bmi, dpf, age]])
     input_scaled = scaler.transform(input_array)
-    print(input_scaled)
     prediction = diabetes_model.predict(input_scaled)[0] 
-    print(prediction)
     if prediction == 1:
         return {'The person is Diabetic'}
     
     else:
         return {'The person is not Diabetic'}
+
+@app.post('/heart_health_prediction')
+async def heart_health_pred(input_params : heart_model_input):
+
+    age	= input_params.age
+    sex	= input_params.sex
+    cp	= input_params.cp
+    trestbps	= input_params.trestbps
+    chol	= input_params.chol
+    fbs	= input_params.fbs
+    restecg	= input_params.restecg
+    thalach	= input_params.thalach
+    exang	= input_params.exang
+    oldpeak	= input_params.oldpeak
+    slope	= input_params.slope
+    ca	= input_params.ca
+    thal= input_params.thal
+
+    input_array = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]])
+    input_scaled = scaler2.transform(input_array)
+    prediction = heart_health_model.predict(input_scaled)[0] 
+    if prediction == 1:
+        return {'The person has heart disease'}
+    
+    else:
+        return {'The person doesn\'t have heart disease'}
