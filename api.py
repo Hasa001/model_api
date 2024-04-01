@@ -21,10 +21,10 @@ app.add_middleware(
 
 class diabetes_model_input(BaseModel):
     Pregnancies : int
-    Glucose : int
-    BloodPressure : int
-    SkinThickness : int
-    Insulin : int
+    Glucose : float
+    BloodPressure : float
+    SkinThickness : float
+    Insulin : float
     BMI : float
     DiabetesPedigreeFunction :  float
     Age : int
