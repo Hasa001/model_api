@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 class diabetes_model_input(BaseModel):
-    
+    Pregnancies : int
     Glucose : int
     BloodPressure : int
     SkinThickness : int
@@ -54,7 +54,7 @@ scaler2= pickle.load(open('scaler2.sav','rb'))
 
 @app.post('/diabetes_prediction')
 async def diabetes_pred(input_parameters : diabetes_model_input):
-    
+    preg=input_parameters.Pregnancies
     glu = input_parameters.Glucose
     bp = input_parameters.BloodPressure
     skin = input_parameters.SkinThickness
@@ -64,7 +64,7 @@ async def diabetes_pred(input_parameters : diabetes_model_input):
     age = input_parameters.Age
 
 
-    input_array = np.array([[glu, bp, skin, insulin, bmi, dpf, age]])
+    input_array = np.array([[preg,glu, bp, skin, insulin, bmi, dpf, age]])
     input_scaled = scaler.transform(input_array)
     prediction = diabetes_model.predict(input_scaled)[0] 
     if prediction == 1:
