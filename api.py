@@ -54,7 +54,7 @@ stress_model = pickle.load(open('Stress_Prediction_Model.sav','rb'))
 
 scaler = pickle.load(open('scaler.sav', 'rb'))
 scaler2= pickle.load(open('scaler2.sav','rb'))
-scaler3= pickle.load(open('tf_transform.sav','rb'))
+scaler3= pickle.load(open('tf_tranform.sav','rb'))
 
 @app.post('/diabetes_prediction')
 async def diabetes_pred(input_parameters : diabetes_model_input):
