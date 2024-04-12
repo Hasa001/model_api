@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pickle
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-
+import json
 
 
 app = FastAPI()
@@ -45,7 +45,9 @@ class heart_model_input(BaseModel):
     ca	: float
     thal: float
 
+class stress_model_input(BaseModel):
 
+    text: str
    
 # loading the saved model
 diabetes_model = pickle.load(open('Diabetes_Model.sav','rb'))
@@ -55,6 +57,7 @@ stress_model = pickle.load(open('Stress_Prediction_Model.sav','rb'))
 scaler = pickle.load(open('scaler.sav', 'rb'))
 scaler2= pickle.load(open('scaler2.sav','rb'))
 scaler3= pickle.load(open('tf_tranform.sav','rb'))
+# prePross=pickle.load(open('text_preprocess.sav','rb'))
 
 @app.post('/diabetes_prediction')
 async def diabetes_pred(input_parameters : diabetes_model_input):
@@ -104,10 +107,13 @@ async def heart_health_pred(input_params : heart_model_input):
         return {'The person doesn\'t have heart disease'}
     
 @app.post('/stress_prediction')
-async def heart_health_pred(text):
-
+async def stress_pred(input_params : stress_model_input):
+    text= input_params.text
+    print("text")
+    print("text:",text)
+    documents = text.split('\n')  
     input_array = np.array([[text]])
-    input_scaled = scaler3.transform(input_array)
+    input_scaled = scaler3.transform(documents)
     prediction = stress_model.predict(input_scaled)[0] 
     if prediction == 1:
         return {'this person is in stress'}
