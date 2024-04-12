@@ -45,12 +45,16 @@ class heart_model_input(BaseModel):
     ca	: float
     thal: float
 
+
+   
 # loading the saved model
 diabetes_model = pickle.load(open('Diabetes_Model.sav','rb'))
 heart_health_model = pickle.load(open('Heart_Disease_Model.sav','rb'))
+stress_model = pickle.load(open('Stress_Prediction_Model.sav','rb'))
 
 scaler = pickle.load(open('scaler.sav', 'rb'))
 scaler2= pickle.load(open('scaler2.sav','rb'))
+scaler3= pickle.load(open('tf_transform.sav','rb'))
 
 @app.post('/diabetes_prediction')
 async def diabetes_pred(input_parameters : diabetes_model_input):
@@ -98,3 +102,15 @@ async def heart_health_pred(input_params : heart_model_input):
     
     else:
         return {'The person doesn\'t have heart disease'}
+    
+@app.post('/stress_prediction')
+async def heart_health_pred(text):
+
+    input_array = np.array([[text]])
+    input_scaled = scaler3.transform(input_array)
+    prediction = stress_model.predict(input_scaled)[0] 
+    if prediction == 1:
+        return {'this person is in stress'}
+    
+    else:
+        return {'this person is not in stress'}
